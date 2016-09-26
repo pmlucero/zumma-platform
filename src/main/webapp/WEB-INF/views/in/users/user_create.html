@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="template">
+<head>
+<title>Zumma | Nuevo Usuario</title>
+</head>
+<body>
+	<div layout:fragment="header">
+		<div th:replace="fragments/header :: header"></div>
+	</div>
+	<div layout:fragment="content">
+			<form role="form" name="form" action="" method="post" class="form-narrow form-horizontal" th:object="${userForm}">
+			<th:block th:if="${param.error != null}">
+				<div th:replace="fragments/alert :: alert (type='danger', message='Formulario con errores. Por favor intente de nuevo.)">Alert</div>
+			</th:block>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<fieldset>
+				<legend th:text="${edit ? 'Editar Usuario' : 'Crear Usuario'}">Crear/Editar Usuario</legend>
+				<div class="form-group">
+					<label for="inputEmail" class="col-lg-3 control-label">Email</label>
+					<div class="input-group">
+						<span class="input-group-addon" id="user-addon">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"/>
+						</span>
+						<input type="text" class="form-control" id="inputEmail" required="required" autofocus="autofocus"
+							placeholder="Email" name="email" aria-describedby="user-addon" th:attr="value=${edit ? form.email : null}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword" class="col-lg-3 control-label">Password</label>
+					<div class="input-group">
+						<span class="input-group-addon" id="pass-addon">
+							<span class="glyphicon glyphicon-lock" aria-hidden="true"/>
+						</span>
+						<input type="password" class="form-control" id="inputPassword" required="required"
+							placeholder="Password" name="password" aria-describedby="lock-addon" th:attr="value=${edit ? form.password : null}"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="passwordRepeated" class="col-lg-3 control-label">Repeat</label>
+					<div class="input-group">
+						<span class="input-group-addon" id="repeat-addon">
+							<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+						</span>
+						<input type="password" class="form-control" required="required" th:attr="value=${edit ? form.password : null}"
+							placeholder="Repeat Password" name="passwordRepeated" id="passwordRepeated" aria-describedby="repeat-addon"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="role" class="col-lg-3 control-label">Role</label>
+					<div class="input-group">
+						<select name="role" id="role" required="required" class="form-control" >
+		        			<option value="USER" th:selected="${form.role.toString() == 'USER'}">USER</option>
+		        			<option value="ADMIN" th:selected="${form.role.toString() == 'ADMIN'}">ADMIN</option>
+		        		</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10">
+						<button type="reset" class="btn btn-default btn-xs" title="Reset" th:attr="disabled=${edit ? 'true' : 'false'}"><span class="glyphicon glyphicon-refresh"></span></button>
+						<a href="/users" class="btn btn-primary btn-s" >Cancelar</a>
+						<button type="submit" class="btn btn-primary btn-s" >Guardar</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div layout:fragment="footer">
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>

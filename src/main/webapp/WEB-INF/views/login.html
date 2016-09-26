@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="template">
+<head>
+<title>Zumma | Ingresar</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<form role="form" action="/login" method="post" class="form-narrow form-horizontal">
+			<th:block th:if="${param.error != null}">
+				<div th:replace="fragments/alert :: alert (type='danger', message='Formulario con errores. Por favor intente de nuevo.')">Alert</div>
+			</th:block>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<fieldset>
+				<legend>Ingreso</legend>
+				<div class="form-group">
+					<label for="inputEmail" class="col-lg-3 control-label">Email</label>
+					<div class="input-group">
+						<span class="input-group-addon" id="user-addon">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"/>
+						</span>
+						<input type="text" class="form-control" id="inputEmail"
+							placeholder="Email" name="email" aria-describedby="user-addon" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword" class="col-lg-3 control-label">Contraseña</label>
+					<div class="input-group">
+						<span class="input-group-addon" id="pass-addon">
+							<span class="glyphicon glyphicon-lock" aria-hidden="true"/>
+						</span>
+						<input type="password" class="form-control" id="inputPassword"
+							placeholder="Contraseña" name="password" aria-describedby="lock-addon"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10">
+						<div class="checkbox">
+							<label> <input type="checkbox"
+								name="_spring_security_remember_me" /> Recordarme
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10">
+						<button type="submit" class="btn btn-primary">Entrar</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</body>
+</html>
