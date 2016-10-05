@@ -17,15 +17,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import ar.com.zumma.platform.domain.User;
 import ar.com.zumma.platform.layout.form.UserForm;
 import ar.com.zumma.platform.layout.form.validator.UserCreateFormValidator;
+import ar.com.zumma.platform.layout.support.PageWrapper;
+import ar.com.zumma.platform.repositories.search.SearchDTO;
+import ar.com.zumma.platform.repositories.search.SearchType;
 import ar.com.zumma.platform.services.user.UserService;
 
 @Controller
-public class UserController {
+public class UserController extends AbstractBaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
@@ -37,6 +41,19 @@ public class UserController {
         this.userCreateFormValidator = userCreateFormValidator;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+	public ModelAndView getUsersList(@RequestParam(value = "find", required = false) String criteriaSearch,
+			@RequestParam(value = "page.page", required = false) String page) {
+		LOGGER.debug("Getting users filtered page by criteriaSearch={} ", criteriaSearch);
+		PageWrapper<User> pageWrapper = new PageWrapper<User>(userService.getFilteredUsers(new SearchDTO(criteriaSearch, SearchType.QUERY_ANNOTATION, getPageable(page))), "/users");
+		ModelAndView mv = new ModelAndView("in/users/users", "page", pageWrapper);
+		if(criteriaSearch != null) {
+			mv = new ModelAndView("in/users/users :: #results", "page", pageWrapper);
+		}
+		return mv;
+	}
+    
     @InitBinder("form")
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(userCreateFormValidator);
@@ -123,4 +140,9 @@ public class UserController {
         }
     	return "redirect:/users";
     }
+
+	@Override
+	public String getSortField() {
+		return "email";
+	}
 }

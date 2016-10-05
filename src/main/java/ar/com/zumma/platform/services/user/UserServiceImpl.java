@@ -1,8 +1,14 @@
 package ar.com.zumma.platform.services.user;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,9 +16,8 @@ import org.springframework.stereotype.Service;
 import ar.com.zumma.platform.domain.User;
 import ar.com.zumma.platform.layout.form.UserForm;
 import ar.com.zumma.platform.repositories.UserRepository;
-
-import java.util.Collection;
-import java.util.Optional;
+import ar.com.zumma.platform.repositories.search.SearchDTO;
+import ar.com.zumma.platform.repositories.search.SearchType;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,9 +43,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<User> getAllUsers() {
+    public Page<User> getAllUsers(Pageable pageable) {
         LOGGER.debug("Getting all users");
-        return userRepository.findAll(new Sort("email"));
+        return userRepository.findAll(pageable);
     }
 
     @Override
@@ -87,6 +92,48 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
         return user;
+	}
+
+	@Override
+	public Page<User> getFilteredUsers(SearchDTO searchCriteria) {
+		LOGGER.debug("Searching users with search criteria: " + searchCriteria);
+        String searchTerm = searchCriteria.getSearchTerm();
+        SearchType searchType = searchCriteria.getSearchType();
+         
+        if (searchType == null) {
+            throw new IllegalArgumentException();
+        }
+        
+        if(searchTerm == null || searchTerm.equalsIgnoreCase(""))
+        	return getAllUsers(searchCriteria.getPageable());
+        else
+        	return userRepository.find(searchTerm, searchCriteria.getPageable());
+	}
+	
+	/*
+    private Page<User> findUsersBySearchType(String searchTerm, SearchType searchType) {
+    	Page<User> users = null;
+        if (searchType == SearchType.METHOD_NAME) {
+            LOGGER.debug("Searching users by using method name query creation.");
+            //users = userRepository.findOneByEmail(searchTerm);
+        }
+        else if (searchType == SearchType.NAMED_QUERY) {
+            LOGGER.debug("Searching users by using named query");
+           //users = personRepository.findByName(searchTerm);
+        }
+        else {
+            LOGGER.debug("Searching users by using query annotation");
+            users = userRepository.find(searchTerm);
+            LOGGER.debug("users:" + users.size());
+        }
+        return users;
+    }*/
+
+	@Override
+	public Page<User> getUsersPage(Pageable pageable) {
+		LOGGER.trace("Page:"+pageable.getPageNumber());
+		LOGGER.trace("Page-Size:"+pageable.getPageSize());
+		return userRepository.findAll(pageable);
 	}
 
 }

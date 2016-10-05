@@ -1,13 +1,17 @@
 package ar.com.zumma.platform.config;
 
+import java.util.List;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -34,6 +38,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     private static final String RESOURCES_HANDLER = "/resources/";
     private static final String RESOURCES_LOCATION = RESOURCES_HANDLER + "**";
+    
+    public static final int PAGE_SIZE = 5;
 
     @Bean(name = "messageSource")
     public MessageSource messageSource() {
@@ -121,4 +127,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         configurer.enable();
     }
 
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+    	PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+    	resolver.setFallbackPageable(new PageRequest(0, PAGE_SIZE));
+        argumentResolvers.add(resolver);
+    }
 }

@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -14,7 +15,10 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint( columnNames = "email")})
-@NamedQuery(name = User.FIND_BY_EMAIL, query = "select u from User u where u.email = :email")
+@NamedQueries({
+  @NamedQuery(name = User.FIND_BY_EMAIL, query = "select u from User u where u.email = :email"),
+  @NamedQuery(name = User.FIND_BY_FILTER, query = "select u from User u where u.email like :filter or role like :filter")
+})
 public class User extends BaseEntity {
 
 	public Role getRole() {
@@ -27,6 +31,7 @@ public class User extends BaseEntity {
 
 	private static final long serialVersionUID = 7701592929924007476L;
 	public static final String FIND_BY_EMAIL = "User.findByEmail";
+	public static final String FIND_BY_FILTER = "User.findByFilter";
 	
 	public static final int STATUS_AVAILABLE = 1;
 
