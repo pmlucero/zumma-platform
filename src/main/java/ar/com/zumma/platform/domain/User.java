@@ -1,12 +1,16 @@
 package ar.com.zumma.platform.domain;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -14,20 +18,12 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "users", uniqueConstraints = { @UniqueConstraint( columnNames = "email")})
+@Table(uniqueConstraints = { @UniqueConstraint( columnNames = "email")})
 @NamedQueries({
   @NamedQuery(name = User.FIND_BY_EMAIL, query = "select u from User u where u.email = :email"),
   @NamedQuery(name = User.FIND_BY_FILTER, query = "select u from User u where u.email like :filter or role like :filter")
 })
 public class User extends BaseEntity {
-
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
 
 	private static final long serialVersionUID = 7701592929924007476L;
 	public static final String FIND_BY_EMAIL = "User.findByEmail";
@@ -49,9 +45,9 @@ public class User extends BaseEntity {
 	@NotNull
 	private int status;
 	
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	private Collection<Role> roles;
     
     @Override
     public String toString(){
@@ -70,7 +66,7 @@ public class User extends BaseEntity {
 		this.email = email;
 		this.passwordHash = password;
 		this.status = status;
-		this.role = role;
+		this.roles.add(role);
 	}
 
 	public long getId() {
@@ -103,6 +99,14 @@ public class User extends BaseEntity {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public Collection<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
 	}
 
 }

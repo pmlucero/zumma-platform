@@ -1,6 +1,9 @@
 package ar.com.zumma.platform.domain;
 
-import org.springframework.security.core.authority.AuthorityUtils;
+import java.util.Collection;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.security.core.GrantedAuthority;
 
 
 public class CurrentUser extends org.springframework.security.core.userdetails.User {
@@ -9,8 +12,8 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
 
 	private User user;
 
-    public CurrentUser(User user) {
-        super(user.getEmail(), user.getPasswordHash(), AuthorityUtils.createAuthorityList(user.getRole().toString()));
+    public CurrentUser(User user, Collection<? extends GrantedAuthority> authorities) {
+        super(user.getEmail(), user.getPasswordHash(), authorities);
         this.user = user;
     }
 
@@ -22,14 +25,12 @@ public class CurrentUser extends org.springframework.security.core.userdetails.U
         return user.getId();
     }
 
-    public Role getRole() {
-        return user.getRole();
+    public Collection<Role> getRoles() {
+        return user.getRoles();
     }
 
     @Override
     public String toString() {
-        return "CurrentUser{" +
-                "user=" + user +
-                "} " + super.toString();
+    	return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -2,6 +2,7 @@ package ar.com.zumma.platform.layout.form;
 
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import ar.com.zumma.platform.domain.Role;
@@ -20,15 +21,15 @@ public class UserForm {
 	@NotEmpty
 	private String passwordRepeated = "";
 
-	@NotNull
-	private Role role = Role.USER;
+	//@NotNull
+	//private Role role = Role.USER;
 
 	public UserForm() {}
 	
 	public UserForm(User user) {
 		this.id = user.getId();
 		this.email = user.getEmail();
-		this.role = user.getRole();
+		//this.role = user.getRole();
 		this.password = user.getPasswordHash();
 	}
 	
@@ -63,19 +64,18 @@ public class UserForm {
 	public void setPasswordRepeated(String passwordRepeated) {
 		this.passwordRepeated = passwordRepeated;
 	}
-
+	/*
 	public Role getRole() {
 		return role;
 	}
 
 	public void setRole(Role role) {
 		this.role = role;
-	}
+	}*/
 
 	@Override
 	public String toString() {
-		return "UserCreateForm{" + "email='" + email.replaceFirst("@.+", "@***") + '\'' + ", password=***" + '\''
-				+ ", passwordRepeated=***" + '\'' + ", role=" + role + '}';
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

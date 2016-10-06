@@ -63,7 +63,8 @@
 			    <tr>
 			    	<th>#</th>
 			        <th>E-mail</th>
-			        <th>Role</th>
+			        <th>Apellido</th>
+			        <th>Nombre/s</th>
 			        <th>Ver</th>
 			        <th>Editar</th>
 			        <th>Eliminar</th>
@@ -76,7 +77,8 @@
 			        <tr th:each="user : ${page.content}">
 			       		<td th:text="${user.id}">NotFound</td>
 			            <td th:text="${user.email}">NotFound</td>
-			            <td th:text="${user.role}">NotFound</td>
+			            <td th:text="${user.lastName}">NotFound</td>
+			            <td th:text="${user.firstName}">NotFound</td>
 			            <td><a href="" th:attr="data-id=${user.getId()}" data-toggle="modal" data-target="#viewUserModal" class="viewButton"><span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
 			            <td><a th:attr="href='/user/' + ${user.getId()} + '/edit'"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
 			            <td><a href="" th:attr="data-id=${user.getId()}" class="deleteButton"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>

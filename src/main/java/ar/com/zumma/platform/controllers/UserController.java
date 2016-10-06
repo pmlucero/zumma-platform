@@ -41,7 +41,7 @@ public class UserController extends AbstractBaseController {
         this.userCreateFormValidator = userCreateFormValidator;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('READ_PRIVILEGE')")
     @RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ModelAndView getUsersList(@RequestParam(value = "find", required = false) String criteriaSearch,
 			@RequestParam(value = "page.page", required = false) String page) {
@@ -59,14 +59,14 @@ public class UserController extends AbstractBaseController {
         binder.addValidators(userCreateFormValidator);
     }
 
-    @PreAuthorize("@currentUserServiceImpl.canAccessUser(principal, #id)")
+    //@PreAuthorize("@currentUserServiceImpl.canAccessUser(principal, #id)")
     @RequestMapping("/user/{id}")
     public ModelAndView getUserPage(@PathVariable Long id) {
         LOGGER.debug("Getting user page for user={}", id);
         return new ModelAndView("user", "user_view", userService.getUserById(id));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/user/create", method = RequestMethod.GET)
     public ModelAndView getUserCreatePage() {
         LOGGER.debug("Getting user create form");
@@ -76,7 +76,7 @@ public class UserController extends AbstractBaseController {
         return mv;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
     public String handleUserCreateForm(@Valid @ModelAttribute("form") UserForm form, BindingResult bindingResult) {
         LOGGER.debug("Processing user create form={}, bindingResult={}", form, bindingResult);
@@ -97,7 +97,7 @@ public class UserController extends AbstractBaseController {
         return "redirect:/users";
     }
     
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
     public String delete(@PathVariable Long id) {
         LOGGER.debug("Deleting user={}", id);
@@ -105,7 +105,7 @@ public class UserController extends AbstractBaseController {
         return "redirect:/users";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
     public ModelAndView getUserEdit(@PathVariable String id) {
         LOGGER.debug("Getting user edit form {}", id);
@@ -124,7 +124,7 @@ public class UserController extends AbstractBaseController {
         return mv;
     }
     
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.POST)
     public String handleUserUpdateForm(@Valid @ModelAttribute("form") UserForm form, BindingResult bindingResult) {
         LOGGER.debug("Processing user update form={}, bindingResult={}", form, bindingResult);

@@ -86,6 +86,10 @@
 		<appender-ref ref="FILE-HIBERNATE" />
 	</logger>	
 
+	<logger name="org.springframework.security" level="trace" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
 	<logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"
 		additivity="false">
 		<appender-ref ref="FILE-HIBERNATE" />

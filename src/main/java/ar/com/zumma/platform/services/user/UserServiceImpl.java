@@ -1,7 +1,6 @@
 package ar.com.zumma.platform.services.user;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -9,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ar.com.zumma.platform.domain.User;
 import ar.com.zumma.platform.layout.form.UserForm;
+import ar.com.zumma.platform.repositories.RoleRepository;
 import ar.com.zumma.platform.repositories.UserRepository;
 import ar.com.zumma.platform.repositories.search.SearchDTO;
 import ar.com.zumma.platform.repositories.search.SearchType;
@@ -25,9 +24,12 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+    
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
 			user = new User();
 			user.setEmail(form.getEmail());
 			user.setPasswordHash(new BCryptPasswordEncoder().encode(form.getPassword()));
-			user.setRole(form.getRole());
+			user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
 			user = userRepository.save(user);
 		} catch (Exception e) {
 			LOGGER.error("User Creation Exception."+ e.getMessage());
@@ -85,7 +87,7 @@ public class UserServiceImpl implements UserService {
 			user.setId(form.getId());
 			user.setEmail(form.getEmail());
 			user.setPasswordHash(new BCryptPasswordEncoder().encode(form.getPassword()));
-			user.setRole(form.getRole());
+			user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
 			user = userRepository.save(user);
 		} catch (Exception e) {
 			LOGGER.error("User Update Exception."+ e.getMessage());

@@ -40,6 +40,7 @@ public class SignupForm {
 	}
 	
 	public User createAccount() {
-		return new User(getUsername(), getPassword(), User.STATUS_AVAILABLE, Role.USER);
+		//return new User(getUsername(), getPassword(), User.STATUS_AVAILABLE, Role.USER);
+		return null;
 	}
 }
